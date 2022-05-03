@@ -1,5 +1,18 @@
+# Dependencies and build folders/files
 node_modules
 .turbo
 build/**
 dist/**
 .next/**
+dist
+dist-ssr
+*.local
+
+# Logs
+logs
+*.log
+pnpm-debug.log*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
