@@ -5,5 +5,8 @@
   "keywords": [],
   "author": "Gustavo Maltez",
   "description": "A simple system for managing gas stations developed as a college group project related to \"introduction to databases\" subject.",
-  "private": true
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
 }
