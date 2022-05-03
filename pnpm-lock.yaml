@@ -19,9 +19,11 @@ importers:
   packages/api:
     specifiers:
       '@types/node': ^17.0.31
+      ts-node: ^10.7.0
       typescript: ^4.6.3
     devDependencies:
       '@types/node': 17.0.31
+      ts-node: 10.7.0_l47be6km5p57gglrggidw5gsgm
       typescript: 4.6.4
 
   packages/web:
