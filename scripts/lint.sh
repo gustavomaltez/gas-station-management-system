@@ -1,5 +1,5 @@
 #!/bin/sh
 
 echo "🚧 Linting all typescript and javascript files..."
-pnpm eslint --ext ts,js,tsx,jsx --fix
+pnpm turbo run lint
 echo "✅ Hooray! Linting complete!"
