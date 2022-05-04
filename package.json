@@ -31,5 +31,10 @@
     "lint": "scripty",
     "test": "scripty",
     "start": "scripty"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint"
+    }
   }
 }
