@@ -12,7 +12,3 @@ dist-ssr
 logs
 *.log
 pnpm-debug.log*
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
