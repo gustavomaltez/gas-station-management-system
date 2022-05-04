@@ -14,10 +14,17 @@
     "@commitlint/config-conventional": "^16.2.4",
     "commitlint-plugin-workspace-scopes": "^1.1.0",
     "husky": "^7.0.4",
+    "scripty": "^2.1.0",
     "turbo": "^1.2.6"
   },
   "volta": {
     "node": "16.15.0",
     "pnpm": "7.0.0-rc.9"
+  },
+  "scripts": {
+    "build": "scripty",
+    "lint": "scripty",
+    "test": "scripty",
+    "start": "scripty"
   }
 }
