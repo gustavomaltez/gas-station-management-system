@@ -1,14 +1,17 @@
+// Vital Imports ---------------------------------------------------------------
+
+import 'reflect-metadata';
 import 'express-async-errors';
+
+// Code Imports ----------------------------------------------------------------
 
 import bodyParser from 'body-parser';
 import express from 'express';
 
-import { initialize as initializeDatabase } from './database/database';
 import { routes } from './routes';
 
 // App initialization ----------------------------------------------------------
 
-initializeDatabase();
 const app = express();
 
 // App configuration -----------------------------------------------------------
