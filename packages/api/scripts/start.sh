@@ -1,4 +1,4 @@
 #!/bin/sh
 
 echo "🚀 Starting API development server..."
-pnpm ts-node src/index.ts
+pnpm ts-node-dev src/index.ts
