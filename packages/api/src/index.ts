@@ -1,10 +1,19 @@
-import express from 'express';
-import { initialize as initializeDatabase } from './database/database';
-import { authenticationRouter } from './routes/authentication.route';
 import bodyParser from 'body-parser';
+import express from 'express';
+
+import { initialize as initializeDatabase } from './database/database';
+import { routes } from './routes';
+
+// App initialization ----------------------------------------------------------
 
 initializeDatabase();
 const app = express();
+
+// App configuration -----------------------------------------------------------
+
 app.use(bodyParser.json());
-app.use('/auth', authenticationRouter);
+app.use(routes);
+
+// App launch ------------------------------------------------------------------
+
 app.listen(7520, () => console.log('Listening on port 7520!'));
