@@ -12,3 +12,6 @@ dist-ssr
 logs
 *.log
 pnpm-debug.log*
+
+# Database
+*.sqlite
