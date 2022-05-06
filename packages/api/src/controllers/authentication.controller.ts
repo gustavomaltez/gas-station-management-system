@@ -8,9 +8,10 @@ export class AuthenticationController {
     this.login = this.login.bind(this);
   }
 
-  register(req: Request, res: Response) {
+  async register(req: Request, res: Response) {
     const { name, email, password } = req.body;
-    this.service.createUser({ name, email, password }).then(user => res.status(200).json(user));
+    const user = await this.service.createUser({ name, email, password });
+    res.status(200).json(user);
   }
 
   login(req: Request, res: Response) {
