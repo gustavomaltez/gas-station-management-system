@@ -1,6 +1,7 @@
 import { Database } from '../database';
 
 import { User } from '../entities';
+import { hashString } from '../utils';
 import { validateDuplicatedUserByEmail, validateEmailStructure } from '../validators';
 
 // DTO's -----------------------------------------------------------------------
@@ -38,11 +39,9 @@ export class DefaultAuthenticationService extends AuthenticationService {
 
   async createUser({ name, email, password }: CreateUserDTO): Promise<User> {
     const repository = this.database.getRepository(User);
-
     validateEmailStructure(email);
     await validateDuplicatedUserByEmail(repository, email);
-
-    return repository.create({ name, email, password });
+    return repository.create({ name, email, password: hashString(password) });
   }
 }
 
