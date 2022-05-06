@@ -1,4 +1,15 @@
 
+
+<br />
+<p align="center">
+  <img alt="Repository size" src="https://img.shields.io/github/languages/code-size/gustavomaltez/gas-station-management-system?style=for-the-badge">
+  <img alt="Language" src="https://img.shields.io/github/languages/top/gustavomaltez/gas-station-management-system?style=for-the-badge">
+  <img alt="Total Lines" src="https://img.shields.io/tokei/lines/github/gustavomaltez/gas-station-management-system?style=for-the-badge">
+  <img alt="Last commit" src="https://img.shields.io/github/last-commit/gustavomaltez/gas-station-management-system?style=for-the-badge">
+  <img alt="License" src="https://img.shields.io/github/license/gustavomaltez/gas-station-management-system?style=for-the-badge">
+</p>
+
+
 ## 🧷 About this project
 
 This is just a simple system for managing gas stations developed as a college group project related to "introduction to databases" subject. The idea behind this application is practice some new concepts related to software development (that will be covered in the next sections) and also develop an app that will be presented as a group project on the "introduction to databases" college subject.
