@@ -24,6 +24,7 @@
   },
   "scripts": {
     "start": "scripty",
-    "lint": "scripty"
+    "lint": "scripty",
+    "cleardb": "scripty"
   }
 }
