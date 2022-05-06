@@ -1,17 +1,16 @@
-/* eslint-disable indent */
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100 })
   name: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100 })
   password: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 }
