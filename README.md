@@ -7,16 +7,16 @@ This is just a simple system for managing gas stations developed as a college gr
 
 As discussed on the previous section, in this project I don't want just do the activities proposed on the "Introduction to Database" subjective, but also practice some new thing that I have been learning during past months.
 
-- [x] Create a high performance monorepo codebase using turborepo.
-- [x] Integrate bash scripts into packages scripts.
-- [x] Manage dependencies using pnpm.
-- [x] Learn how to use the new released TypeORM version.
-- [x] Develop a RESTful API fully test covered and following good code practices.
-- [x] Develop a frontend application using tailwindcss and vitejs.
+- ✅ Create a high performance monorepo codebase using turborepo.
+- ✅ Integrate bash scripts into packages scripts.
+- ✅ Manage dependencies using pnpm.
+- ✅ Learn how to use the new released TypeORM version.
+- ✅ Develop a RESTful API fully test covered and following good code practices.
+- ✅ Develop a frontend application using tailwindcss and vitejs.
 
 ## 🤔 Frequently Asked Questions
 
-1.
+- ❓
 
 
 ## 🔨 Running the application
@@ -27,5 +27,6 @@ As discussed on the previous section, in this project I don't want just do the a
    git clone https://github.com/gustavomaltez/gas-station-management-system
    ```
    
-## 📄 Licença
+## 📄 License
 
+null
