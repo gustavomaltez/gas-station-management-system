@@ -1,6 +1,15 @@
 import { Database } from '../database';
 
 import { User } from '../entities';
+import { validateDuplicatedUserByEmail, validateEmailStructure } from '../validators';
+
+// DTO's -----------------------------------------------------------------------
+
+interface CreateUserDTO {
+  name: string;
+  email: string;
+  password: string;
+}
 
 // Abstraction -----------------------------------------------------------------
 
@@ -23,26 +32,17 @@ export abstract class AuthenticationService {
   abstract createUser(user: CreateUserDTO): Promise<User>;
 }
 
-// DTO's -----------------------------------------------------------------------
-
-interface CreateUserDTO {
-  name: string;
-  email: string;
-  password: string;
-}
-
 // Implementations -------------------------------------------------------------
 
 export class DefaultAuthenticationService extends AuthenticationService {
 
-  createUser({ name, email, password }: CreateUserDTO): Promise<User> {
-    const user = new User();
-    user.name = name;
-    user.email = email;
-    user.password = password;
-    
-    const userRepository = this.database.getRepository(User);
-    return userRepository.save(user);
+  async createUser({ name, email, password }: CreateUserDTO): Promise<User> {
+    const repository = this.database.getRepository(User);
+
+    validateEmailStructure(email);
+    await validateDuplicatedUserByEmail(repository, email);
+
+    return repository.create({ name, email, password });
   }
 }
 
