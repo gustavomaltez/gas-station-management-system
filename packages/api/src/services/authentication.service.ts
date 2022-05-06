@@ -1,14 +1,26 @@
-// Contract -------------------------------------------------------------------- 
+import { Database } from '../database';
 
-import { getRepository } from '../database/database';
 import { User } from '../entities';
 
+// Abstraction -----------------------------------------------------------------
+
 /**
- * Represents the authentication service.
- * This interface should be implemented by all the types of authentication services.
+ * @abstract Abstract implementation of the authentication service.
+ * All authentication services *MUST* extend this class.
  */
-export interface AuthenticationService {
-  createUser: (user: CreateUserDTO) => Promise<User>;
+export abstract class AuthenticationService {
+
+  /**
+   * @param database An database instance.
+   */
+  constructor(protected readonly database: Database) { }
+
+  /**
+   * Creates a new user entry into database.
+   * 
+   * @param user The user to be created into the database.
+   */
+  abstract createUser(user: CreateUserDTO): Promise<User>;
 }
 
 // DTO's -----------------------------------------------------------------------
@@ -21,14 +33,16 @@ interface CreateUserDTO {
 
 // Implementations -------------------------------------------------------------
 
-export class DefaultAuthenticationService implements AuthenticationService {
+export class DefaultAuthenticationService extends AuthenticationService {
 
   createUser({ name, email, password }: CreateUserDTO): Promise<User> {
     const user = new User();
     user.name = name;
     user.email = email;
     user.password = password;
-
-    return getRepository(User).save(user);
+    
+    const userRepository = this.database.getRepository(User);
+    return userRepository.save(user);
   }
 }
+
