@@ -1,8 +1,7 @@
 import { Database } from '../database';
-
 import { User } from '../entities';
 import { hashString } from '../utils';
-import { validateDuplicatedUserByEmail, validateEmailStructure } from '../validators';
+import { validateDuplicatedUserByEmail, validateEmailStructure, validateUser, validateUserPassword } from '../validators';
 
 // DTO's -----------------------------------------------------------------------
 
@@ -42,6 +41,13 @@ export class DefaultAuthenticationService extends AuthenticationService {
     validateEmailStructure(email);
     await validateDuplicatedUserByEmail(repository, email);
     return repository.create({ name, email, password: hashString(password) });
+  }
+
+  async login(email: string, password: string): Promise<void> {
+    const repository = this.database.getRepository(User);
+    const user = await repository.findOne({ where: { email } });
+    validateUser(user);
+    validateUserPassword(user, password);
   }
 }
 
