@@ -7,4 +7,5 @@
   "editor.insertSpaces": true,
   "editor.trimAutoWhitespace": false,
   "editor.renderWhitespace": "all",
+  "typescriptHero.imports.organizeOnSave": true,
 }
