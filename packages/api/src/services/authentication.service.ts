@@ -1,5 +1,6 @@
 import { Database } from '../database';
 import { User } from '../entities';
+import { UserRole } from '../entities/User.entity';
 import { hashString } from '../utils';
 import { validateDuplicatedUserByEmail, validateEmailStructure, validateUser, validateUserPassword } from '../validators';
 
@@ -9,6 +10,7 @@ interface CreateUserDTO {
   name: string;
   email: string;
   password: string;
+  isAdmin: boolean;
 }
 
 // Abstraction -----------------------------------------------------------------
@@ -30,17 +32,33 @@ export abstract class AuthenticationService {
    * @param user The user to be created into the database.
    */
   abstract createUser(user: CreateUserDTO): Promise<User>;
+
+  /**
+   * Creates an user instance from a user DTO.
+   * 
+   * @param data The user data to create a new user instance.
+   * @returns The actual user instance.
+   */
+  protected createUserInstance(data: CreateUserDTO): User {
+    const user = new User();
+    user.name = data.name;
+    user.email = data.email;
+    user.password = hashString(data.password);
+    user.role = data.isAdmin ? UserRole.admin : UserRole.employee;
+    return user;
+  }
 }
 
 // Implementations -------------------------------------------------------------
 
 export class DefaultAuthenticationService extends AuthenticationService {
 
-  async createUser({ name, email, password }: CreateUserDTO): Promise<User> {
+  async createUser(data: CreateUserDTO): Promise<User> {
     const repository = this.database.getRepository(User);
-    validateEmailStructure(email);
-    await validateDuplicatedUserByEmail(repository, email);
-    return repository.create({ name, email, password: hashString(password) });
+    validateEmailStructure(data.email);
+    await validateDuplicatedUserByEmail(repository, data.email);
+    const user = this.createUserInstance(data);
+    return await repository.save(user);
   }
 
   async login(email: string, password: string): Promise<void> {
