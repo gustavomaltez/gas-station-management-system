@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+
 import { AuthenticationService } from '../services';
 
 export class AuthenticationController {
@@ -9,8 +10,8 @@ export class AuthenticationController {
   }
 
   async register(req: Request, res: Response) {
-    const { name, email, password } = req.body;
-    const user = await this.service.createUser({ name, email, password });
+    const { name, email, password, isAdmin } = req.body;
+    const user = await this.service.createUser({ name, email, password, isAdmin });
     res.status(200).json(user);
   }
 
