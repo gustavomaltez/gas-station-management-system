@@ -15,9 +15,15 @@ export class InvalidUserEmail extends InvalidUserCredentials {
   }
 }
 
-export class DuplicatedUserEmail extends InvalidUserCredentials {
-  constructor(email: string) {
-    super(`Duplicated User Email. The provided email "${email}" is already in use.`);
+export class InvalidUserCPF extends InvalidUserCredentials {
+  constructor(cpf: string) {
+    super(`Invalid User CPF. The provided CPF "${cpf}" is not valid. CPF must follow the standard (000.000.000-00).`);
+  }
+}
+
+export class DuplicatedUserCredentials extends InvalidUserCredentials {
+  constructor(email: string, cpf: string) {
+    super(`Duplicated User Credentials. The provided email "${email}" and/or cpf "${cpf}" is already in use.`);
   }
 }
 
