@@ -1,16 +1,25 @@
+import { Repository } from 'typeorm';
+
 import { Database } from '../database';
-import { User } from '../entities';
-import { UserRole } from '../entities/User.entity';
+import { Administrator, Employee } from '../entities';
 import { hashString } from '../utils';
-import { validateDuplicatedUserByEmail, validateEmailStructure, validateUser, validateUserPassword } from '../validators';
+import { validateCPFStructure, validateDuplicatedUserByEmailOrCPF, validateEmailStructure } from '../validators';
 
 // DTO's -----------------------------------------------------------------------
 
 interface CreateUserDTO {
+  // Shared properties
+  cpf: string;
   name: string;
   email: string;
   password: string;
-  isAdmin: boolean;
+
+  // Specification properties
+  salary: number;
+  isAdminRoot: boolean;
+
+  // Other properties
+  type: 'admin' | 'employee';
 }
 
 // Abstraction -----------------------------------------------------------------
@@ -31,21 +40,59 @@ export abstract class AuthenticationService {
    * 
    * @param user The user to be created into the database.
    */
-  abstract createUser(user: CreateUserDTO): Promise<User>;
+  abstract createUser(user: CreateUserDTO): Promise<Administrator | Employee>;
+
+  // Protected utility methods -------------------------------------------------
 
   /**
-   * Creates an user instance from a user DTO.
+   * Hashes the user passord and returns the provided user data with the hashed password
    * 
-   * @param data The user data to create a new user instance.
-   * @returns The actual user instance.
+   * @param user The user data used to create a user
+   * @returns The same user data but with the password hased
    */
-  protected createUserInstance(data: CreateUserDTO): User {
-    const user = new User();
-    user.name = data.name;
-    user.email = data.email;
-    user.password = hashString(data.password);
-    user.role = data.isAdmin ? UserRole.admin : UserRole.employee;
-    return user;
+  protected hashUserPassword(user: CreateUserDTO): CreateUserDTO {
+    return {
+      ...user,
+      password: hashString(user.password)
+    };
+  }
+
+  /**
+   * Validates if the user data follow the standarts for email and cpf
+   * 
+   * @param user The user data to be validated.
+   */
+  protected validateUserDataStructure({ email, cpf }: CreateUserDTO): void {
+    validateEmailStructure(email);
+    validateCPFStructure(cpf);
+  }
+
+  /**
+   * Validates if there is no used already registrated with the providaded user data
+   * 
+   * @param user The user data to be validated
+   */
+  protected async validateDuplicatedUserData(user: CreateUserDTO): Promise<void> {
+    const promises = [this.database.getRepository(Administrator), this.database.getRepository(Employee)];
+    const repositories = await Promise.all(promises);
+    await validateDuplicatedUserByEmailOrCPF(repositories, user.email, user.cpf);
+  }
+
+  /**
+   * Saves the user into database
+   * 
+   * - This method creates either an `Administrator` or an `Employee` depending on the user type
+   * 
+   * @param user The user data to be saved into database.
+   * @returns The instance of the just created user.
+   */
+  protected async saveUserDataIntoDatabase(user: CreateUserDTO): Promise<Administrator | Employee> {
+    const { getRepository } = this.database;
+
+    const isAdmin = user.type === 'admin';
+    const promise = (isAdmin ? getRepository(Administrator) : getRepository(Employee));
+    const repository = await promise as Repository<Administrator | Employee>;
+    return await repository.save(this.hashUserPassword(user));
   }
 }
 
@@ -53,19 +100,32 @@ export abstract class AuthenticationService {
 
 export class DefaultAuthenticationService extends AuthenticationService {
 
-  async createUser(data: CreateUserDTO): Promise<User> {
-    const repository = this.database.getRepository(User);
-    validateEmailStructure(data.email);
-    await validateDuplicatedUserByEmail(repository, data.email);
-    const user = this.createUserInstance(data);
-    return await repository.save(user);
+  constructor(protected readonly database: Database) {
+    super(database);
+
+    // Methods binding ---------------------------------------------------------
+
+    this.createUser = this.createUser.bind(this);
+    this.hashUserPassword = this.hashUserPassword.bind(this);
+    this.validateDuplicatedUserData = this.validateDuplicatedUserData.bind(this);
+    this.saveUserDataIntoDatabase = this.saveUserDataIntoDatabase.bind(this);
+    this.validateUserDataStructure = this.validateUserDataStructure.bind(this);
+  }
+
+  async createUser(data: CreateUserDTO): Promise<Administrator | Employee> {
+    this.validateUserDataStructure(data);
+    await this.validateDuplicatedUserData(data);
+    const user = await this.saveUserDataIntoDatabase(data);
+    // return user without sensitive data
+    return user;
   }
 
   async login(email: string, password: string): Promise<void> {
-    const repository = this.database.getRepository(User);
-    const user = await repository.findOne({ where: { email } });
-    validateUser(user);
-    validateUserPassword(user, password);
+    // ToDo: Add logic to login as admin or as employee
+    // const repository = await this.database.getRepository(User);
+    // const user = await repository.findOne({ where: { email } });
+    // validateUser(user);
+    // validateUserPassword(user, password);
   }
 }
 

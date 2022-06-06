@@ -10,8 +10,11 @@ export class AuthenticationController {
   }
 
   async register(req: Request, res: Response) {
-    const { name, email, password, isAdmin } = req.body;
-    const user = await this.service.createUser({ name, email, password, isAdmin });
+    const { name, email, password, cpf, isAdmin, isAdminRoot, salary } = req.body;
+    const type = isAdmin ? 'admin' : 'employee';
+    const user = await this.service.createUser({
+      name, email, password, cpf, type, isAdminRoot, salary
+    });
     res.status(200).json(user);
   }
 
