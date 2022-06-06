@@ -9,5 +9,5 @@ export interface Database {
    * 
    * @param entity The entity associated to the repository to be retrieved.
    */
-  getRepository<EntityType>(entity: EntityTarget<EntityType>): Repository<EntityType>;
+  getRepository<EntityType>(entity: EntityTarget<EntityType>): Promise<Repository<EntityType>>;
 }
