@@ -21,7 +21,7 @@ const DEFAULT_DATABASE_CONNECTION_TRY_COUNT = 3;
 class Database implements IDatabase {
 
   constructor(private readonly dataSource: DataSource) {
-    this.dataSource.initialize()
+    this.dataSource.initialize();
     
     // Methods binding ---------------------------------------------------------
     this.getRepository = this.getRepository.bind(this);
