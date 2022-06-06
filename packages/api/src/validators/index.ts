@@ -1,12 +1,8 @@
 import { Repository } from 'typeorm';
 
-import { User } from '../entities';
-import {
-  DuplicatedUserEmail,
-  InvalidUserEmail,
-  InvalidUserEmailOrPassword,
-} from '../errors';
-import { hashedStringMatches } from '../utils';
+import { Administrator, Employee } from '../entities';
+import { DuplicatedUserCredentials, InvalidUserCPF, InvalidUserEmail, InvalidUserEmailOrPassword } from '../errors';
+import { hashedStringMatches, toArray } from '../utils';
 
 // About the validators --------------------------------------------------------
 
@@ -20,7 +16,7 @@ import { hashedStringMatches } from '../utils';
 // Validators ------------------------------------------------------------------
 
 /**
- * Validates if a email follows the standard (user@provider.something) and throws an error if not.
+ * Validates if an email follows the standard (user@provider.something) and throws an error if not.
  * 
  * @param email The email to be validated.
  */
@@ -32,14 +28,36 @@ export function validateEmailStructure(email: string) {
 }
 
 /**
- * Validates if the provided email is not already in use. Throws an error if so.
+ * Validates if a cpf follows the standard (000.000.000-00) and throws an error if not.
  * 
- * @param repository The repository to be used to find the user.
- * @param email The email to be used to find the user.
+ * @param cpf The cpf to be validated.
  */
-export async function validateDuplicatedUserByEmail(repository: Repository<User>, email: string) {
-  const user = await repository.findOne({ where: { email } });
-  if (user) throw new DuplicatedUserEmail(email);
+export function validateCPFStructure(cpf: string){
+  const cpfRegex = /^/;
+
+  if (typeof cpf !== 'string' || !cpfRegex.test(cpf))
+    throw new InvalidUserCPF(cpf);
+}
+
+/**
+ * Validates if the provided email and cpf is not already in use. Throws an error if so.
+ * 
+ * @param repositoryOrRepositories The repository to be used to find the user.
+ * @param email The email to be used to find an user.
+ * @param cpf The cpf to be used to find an user.
+ */
+export async function validateDuplicatedUserByEmailOrCPF(
+  repositoryOrRepositories: Repository<Employee | Administrator> | Repository<Employee | Administrator>[],
+  email: string,
+  cpf: string
+) {
+  const repositories = toArray(repositoryOrRepositories);
+
+  const promisses = repositories.map(repository => repository.findOne({ where: { email, cpf } }));
+  const users = await Promise.all(promisses);
+  const userWithProvidedEmailAlreadyExists = users.some(user => !!user);
+
+  if (userWithProvidedEmailAlreadyExists) throw new DuplicatedUserCredentials(email, cpf);
 }
 
 /**
@@ -47,7 +65,7 @@ export async function validateDuplicatedUserByEmail(repository: Repository<User>
  * 
  * @param user The user to be validated.
  */
-export async function validateUser(user: User | null) {
+export async function validateUser(user: Administrator | Employee | null) {
   if (!user) throw new InvalidUserEmailOrPassword();
 }
 
@@ -57,7 +75,7 @@ export async function validateUser(user: User | null) {
  * @param user The user to be validated.
  * @param providedPassword The provided password to try to match the user.
  */
-export async function validateUserPassword(user: User | null, providedPassword: string) {
+export async function validateUserPassword(user: Administrator | Employee | null, providedPassword: string) {
   if (!user || !hashedStringMatches(user.password, providedPassword))
     throw new InvalidUserEmailOrPassword();
 }
