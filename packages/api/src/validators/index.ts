@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 
 import { Administrator, Employee } from '../entities';
 import { DuplicatedUserCredentials, InvalidUserCPF, InvalidUserEmail, InvalidUserEmailOrPassword } from '../errors';
-import { hashedStringMatches, toArray } from '../utils';
+import { hashedStringMatches, isValidString, toArray } from '../utils';
 
 // About the validators --------------------------------------------------------
 
@@ -32,7 +32,7 @@ export function validateEmailStructure(email: string) {
  * 
  * @param cpf The cpf to be validated.
  */
-export function validateCPFStructure(cpf: string){
+export function validateCPFStructure(cpf: string) {
   const cpfRegex = /^/;
 
   if (typeof cpf !== 'string' || !cpfRegex.test(cpf))
@@ -73,9 +73,9 @@ export async function validateUser(user: Administrator | Employee | null) {
  * Checks if the provided user password matches the one stored in the database. Throws an error if not.
  * 
  * @param user The user to be validated.
- * @param providedPassword The provided password to try to match the user.
+ * @param password The provided password to try to match the user.
  */
-export async function validateUserPassword(user: Administrator | Employee | null, providedPassword: string) {
-  if (!user || !hashedStringMatches(user.password, providedPassword))
+export async function validateUserPassword(user: Administrator | Employee | null, password: string) {
+  if (!user || !isValidString(password) || !hashedStringMatches(user.password, password))
     throw new InvalidUserEmailOrPassword();
 }
