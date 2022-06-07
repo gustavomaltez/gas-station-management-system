@@ -3,7 +3,13 @@ import { Repository } from 'typeorm';
 import { Database } from '../database';
 import { Administrator, Employee } from '../entities';
 import { hashString } from '../utils';
-import { validateCPFStructure, validateDuplicatedUserByEmailOrCPF, validateEmailStructure } from '../validators';
+import {
+  validateCPFStructure,
+  validateDuplicatedUserByEmailOrCPF,
+  validateEmailStructure,
+  validateUser,
+  validateUserPassword,
+} from '../validators';
 
 // DTO's -----------------------------------------------------------------------
 
@@ -41,7 +47,15 @@ export abstract class AuthenticationService {
    * @param user The user to be created into the database.
    */
   abstract createUser(user: CreateUserDTO): Promise<Administrator | Employee>;
-
+  
+  /**
+   * Authenticates a user and returns the authentication token
+   * 
+   * @param email The user email.
+   * @param password The user password.
+   */
+  abstract login(email: string, password: string): Promise<string>;
+  
   // Protected utility methods -------------------------------------------------
 
   /**
@@ -94,6 +108,24 @@ export abstract class AuthenticationService {
     const repository = await promise as Repository<Administrator | Employee>;
     return await repository.save(this.hashUserPassword(user));
   }
+  
+  /**
+   * Searches into the Employee and Admin repositories respectively and returns
+   * the first instances that matches the provided email
+   * 
+   * - Note: If for any reason exists an employee and a administrator with the 
+   * same email, the returned instance will be the employee one.
+   * 
+   * @param email The user email to search by.
+   * @returns An instance of the Administrator or Employee. Returns null if no one is found.
+   */
+  protected async getUserByEmail(email: string): Promise<Administrator | Employee | null> {
+    const promises = [this.database.getRepository(Employee), this.database.getRepository(Administrator)];
+    const repositories = await Promise.all(promises);
+    const employee = await repositories[0].findOne({ where: { email } });
+    if(employee) return employee;
+    return await repositories[1].findOne({ where: { email } });
+  }
 }
 
 // Implementations -------------------------------------------------------------
@@ -110,22 +142,23 @@ export class DefaultAuthenticationService extends AuthenticationService {
     this.validateDuplicatedUserData = this.validateDuplicatedUserData.bind(this);
     this.saveUserDataIntoDatabase = this.saveUserDataIntoDatabase.bind(this);
     this.validateUserDataStructure = this.validateUserDataStructure.bind(this);
+    this.getUserByEmail = this.getUserByEmail.bind(this);
   }
 
   async createUser(data: CreateUserDTO): Promise<Administrator | Employee> {
     this.validateUserDataStructure(data);
     await this.validateDuplicatedUserData(data);
     const user = await this.saveUserDataIntoDatabase(data);
-    // return user without sensitive data
+    // ToDo:return user without sensitive data
     return user;
   }
 
-  async login(email: string, password: string): Promise<void> {
-    // ToDo: Add logic to login as admin or as employee
-    // const repository = await this.database.getRepository(User);
-    // const user = await repository.findOne({ where: { email } });
-    // validateUser(user);
-    // validateUserPassword(user, password);
+  async login(email: string, password: string): Promise<string> {
+    validateEmailStructure(email);
+    const user = await this.getUserByEmail(email);
+    validateUser(user);
+    validateUserPassword(user, password);
+    return 'fake-token';
   }
 }
 
