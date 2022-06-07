@@ -50,7 +50,7 @@ export function toArray<Item extends unknown>(itemOrItems: Item | Item[]): Item[
  * @returns Whether the provided value is a valid string or not
  */
 export function isValidString(value: unknown) {
-  const isString = typeof value === "string";
+  const isString = typeof value === 'string';
   if (!isString) return false;
   const isNonNull = value.trim().length > 0;
   return isNonNull;
