@@ -1,9 +1,6 @@
-// Vital Imports ---------------------------------------------------------------
-
-import 'reflect-metadata';
+import 'dotenv/config';
 import 'express-async-errors';
-
-// Code Imports ----------------------------------------------------------------
+import 'reflect-metadata';
 
 import bodyParser from 'body-parser';
 import express from 'express';
