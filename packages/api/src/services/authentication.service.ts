@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 
 import { Database } from '../database';
 import { Administrator, Employee } from '../entities';
-import { hashString } from '../utils';
+import { generateUserAccessToken, hashString } from '../utils';
 import {
   validateCPFStructure,
   validateDuplicatedUserByEmailOrCPF,
@@ -156,9 +156,9 @@ export class DefaultAuthenticationService extends AuthenticationService {
   async login(email: string, password: string): Promise<string> {
     validateEmailStructure(email);
     const user = await this.getUserByEmail(email);
-    validateUser(user);
+    const validUser = validateUser(user);
     validateUserPassword(user, password);
-    return 'fake-token';
+    return generateUserAccessToken(validUser);
   }
 }
 
