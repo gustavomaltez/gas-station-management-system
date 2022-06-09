@@ -65,8 +65,9 @@ export async function validateDuplicatedUserByEmailOrCPF(
  * 
  * @param user The user to be validated.
  */
-export async function validateUser(user: Administrator | Employee | null) {
+export function validateUser(user: Administrator | Employee | null): user is Administrator | Employee {
   if (!user) throw new InvalidUserEmailOrPassword();
+  return true;
 }
 
 /**
@@ -75,7 +76,7 @@ export async function validateUser(user: Administrator | Employee | null) {
  * @param user The user to be validated.
  * @param password The provided password to try to match the user.
  */
-export async function validateUserPassword(user: Administrator | Employee | null, password: string) {
+export function validateUserPassword(user: Administrator | Employee | null, password: string) {
   if (!user || !isValidString(password) || !hashedStringMatches(user.password, password))
     throw new InvalidUserEmailOrPassword();
 }
