@@ -59,10 +59,10 @@ export abstract class AuthenticationService {
   // Protected utility methods -------------------------------------------------
 
   /**
-   * Hashes the user passord and returns the provided user data with the hashed password
+   * Hashes the user password and returns the provided user data with the hashed password
    * 
    * @param user The user data used to create a user
-   * @returns The same user data but with the password hased
+   * @returns The same user data but with the password hashed
    */
   protected hashUserPassword(user: CreateUserDTO): CreateUserDTO {
     return {
@@ -72,7 +72,7 @@ export abstract class AuthenticationService {
   }
 
   /**
-   * Validates if the user data follow the standarts for email and cpf
+   * Validates if the user data follow the standards for email and cpf
    * 
    * @param user The user data to be validated.
    */
@@ -82,7 +82,7 @@ export abstract class AuthenticationService {
   }
 
   /**
-   * Validates if there is no used already registrated with the providaded user data
+   * Validates if there is no used already registered with the provided user data
    * 
    * @param user The user data to be validated
    */
