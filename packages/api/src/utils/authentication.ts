@@ -10,6 +10,6 @@ import { Administrator, Employee } from '../entities';
  */
 export function generateUserAccessToken(user: Employee | Administrator): string {
   const secret = process.env.ACCESS_TOKEN_SECRET as string;
-  const payload = { id: user.id, name: user.name };
+  const payload = { id: user.id };
   return jwt.sign(payload, secret, { expiresIn: "1h" });
 }
