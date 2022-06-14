@@ -24,7 +24,7 @@
   },
   "volta": {
     "node": "16.15.0",
-    "pnpm": "7.1.9"
+    "pnpm": "7.2.1"
   },
   "scripts": {
     "build": "scripty",
