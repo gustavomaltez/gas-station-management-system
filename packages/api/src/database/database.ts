@@ -29,7 +29,6 @@ class Database implements IDatabase {
 
   async getRepository<EntityType>(entity: EntityTarget<EntityType>) {
     if(!this.dataSource.isInitialized) await this.dataSource.initialize();
-    this.dataSource.query()
     return this.dataSource.getRepository<EntityType>(entity);
   }
 }
