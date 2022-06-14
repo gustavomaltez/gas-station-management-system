@@ -3,8 +3,6 @@ import { DataSource, EntityTarget } from 'typeorm';
 import { sqliteDataSource } from './datasources';
 import { Database as IDatabase } from './types';
 
-const DEFAULT_DATABASE_CONNECTION_TRY_COUNT = 3;
-
 /**
  * Default database handler.
  * 
@@ -31,6 +29,7 @@ class Database implements IDatabase {
 
   async getRepository<EntityType>(entity: EntityTarget<EntityType>) {
     if(!this.dataSource.isInitialized) await this.dataSource.initialize();
+    this.dataSource.query()
     return this.dataSource.getRepository<EntityType>(entity);
   }
 }
