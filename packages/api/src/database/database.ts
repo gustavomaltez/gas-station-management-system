@@ -31,6 +31,11 @@ class Database implements IDatabase {
     if(!this.dataSource.isInitialized) await this.dataSource.initialize();
     return this.dataSource.getRepository<EntityType>(entity);
   }
+  
+  async runQuery(query: string): Promise<unknown> {
+    if(!this.dataSource.isInitialized) await this.dataSource.initialize();
+    return this.dataSource.query(query);
+  }
 }
 
 // Different database creations ------------------------------------------------
