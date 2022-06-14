@@ -1,6 +1,6 @@
 import { DataSource, EntityTarget } from 'typeorm';
 
-import { sqliteDataSource } from './datasources';
+import { postgresDataSource } from './datasources';
 import { Database as IDatabase } from './types';
 
 /**
@@ -40,8 +40,9 @@ class Database implements IDatabase {
 
 // Different database creations ------------------------------------------------
 
-const sqliteDatabase = new Database(sqliteDataSource);
+// const sqliteDatabase = new Database(sqliteDataSource);
+const postgresDatabase = new Database(postgresDataSource);
 
 // Default export --------------------------------------------------------------
 
-export const database = sqliteDatabase;
+export const database = postgresDatabase;
