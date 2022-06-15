@@ -29,3 +29,19 @@ export function generateUserRefreshToken(user: Employee | Administrator): string
     expiresIn: REFRESH_TOKEN_EXPIRATION_TIME
   });
 }
+
+/**
+ * Helper function to generate both access and refresh tokens.
+ * 
+ * @param user The user data to generate the tokens for
+ * @returns An object containing both the access and refresh tokens
+ */
+export function generateUserTokens(user: Employee | Administrator): {
+  accessToken: string,
+  refreshToken: string;
+} {
+  return {
+    accessToken: generateUserAccessToken(user),
+    refreshToken: generateUserRefreshToken(user)
+  };
+}
