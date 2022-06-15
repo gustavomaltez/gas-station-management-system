@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 
 import { Database } from '../database';
 import { Administrator, Employee } from '../entities';
-import { generateUserAccessToken, hashString } from '../utils';
+import { generateUserTokens, hashString } from '../utils';
 import {
   validateCPFStructure,
   validateDuplicatedUserByEmailOrCPF,
@@ -26,6 +26,11 @@ interface CreateUserDTO {
 
   // Other properties
   type: 'admin' | 'employee';
+}
+
+interface UserTokens {
+  accessToken: string;
+  refreshToken: string;
 }
 
 // Abstraction -----------------------------------------------------------------
@@ -54,7 +59,7 @@ export abstract class AuthenticationService {
    * @param email The user email.
    * @param password The user password.
    */
-  abstract login(email: string, password: string): Promise<string>;
+  abstract login(email: string, password: string): Promise<UserTokens>;
   
   // Protected utility methods -------------------------------------------------
 
@@ -153,12 +158,12 @@ export class DefaultAuthenticationService extends AuthenticationService {
     return user;
   }
 
-  async login(email: string, password: string): Promise<string> {
+  async login(email: string, password: string): Promise<UserTokens> {
     validateEmailStructure(email);
     const user = await this.getUserByEmail(email);
     const validUser = validateUser(user);
     validateUserPassword(user, password);
-    return generateUserAccessToken(validUser);
+    return generateUserTokens(validUser);
   }
 }
 
