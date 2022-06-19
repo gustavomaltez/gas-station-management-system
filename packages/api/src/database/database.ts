@@ -1,48 +1,58 @@
-import { DataSource, EntityTarget } from 'typeorm';
+import { EntityTarget } from 'typeorm';
 
-import { postgresDataSource } from './datasources';
-import { Database as IDatabase } from './types';
+import { defaultDataSource } from './datasources';
+import { Database as IDatabase, DataSource } from './types';
 
-/**
- * Default database handler.
- * 
- * - This class uses the TypeORM to connect to the database. 
- * - You can use different databases by changing the data source. 
- * - All databases operations MUST use instances of this class. 
- * - You can create your database instance at the end of this file, but remember 
- * to make only one exportation called `database`.
- * - This class is a singleton and must never be exported, only it's instancies.
- * 
- * See all the available database supported types in: 
- * @see https://typeorm.io/data-source-options
- */
+
 class Database implements IDatabase {
 
   constructor(private readonly dataSource: DataSource) {
     this.dataSource.initialize();
-    
+
     // Methods binding ---------------------------------------------------------
+    this.query = this.query.bind(this);
+    this.getCachedData = this.getCachedData.bind(this);
     this.getRepository = this.getRepository.bind(this);
   }
 
-  // Public methods ------------------------------------------------------------
+  // In-disk database methods --------------------------------------------------
 
-  async getRepository<EntityType>(entity: EntityTarget<EntityType>) {
-    if(!this.dataSource.isInitialized) await this.dataSource.initialize();
-    return this.dataSource.getRepository<EntityType>(entity);
+  async query<Type>(query: string): Promise<Type> {
+    await this.dataSource.initialize();
+    return this.dataSource.database.query(query);
   }
-  
-  async runQuery(query: string): Promise<unknown> {
-    if(!this.dataSource.isInitialized) await this.dataSource.initialize();
-    return this.dataSource.query(query);
+
+  // In-memory database methods ------------------------------------------------
+
+  async getCachedData(key: string): Promise<string | null> {
+    await this.dataSource.initialize();
+    return this.dataSource.cache.get(key);
+  }
+
+  async setCachedData(key: string, value: string): Promise<string | null> {
+    await this.dataSource.initialize();
+    return this.dataSource.cache.set(key, value);
+  }
+
+  async deleteCachedData(key: string): Promise<void> {
+    await this.dataSource.initialize();
+    return this.dataSource.cache.delete(key);
+  }
+
+  /**
+   * @deprecated It will be removed soon.
+   *  ToDo: Remove this method later
+   */
+  async getRepository<EntityType>(entity: EntityTarget<EntityType>) {
+    return this.dataSource.database.getRepository<EntityType>(entity);
   }
 }
 
 // Different database creations ------------------------------------------------
 
-// const sqliteDatabase = new Database(sqliteDataSource);
-const postgresDatabase = new Database(postgresDataSource);
+
+const defaultDatabase = new Database(defaultDataSource);
 
 // Default export --------------------------------------------------------------
 
-export const database = postgresDatabase;
+export const database = defaultDatabase;
