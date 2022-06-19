@@ -41,6 +41,15 @@ As discussed on the previous section, in this project I don't want just do the a
 
      - Using PostgreSQL CLI:
     Check the official documentation [here](https://www.postgresql.org/docs/current/tutorial-start.html)
+    
+3. Add your PostgreSQL credentials to the .env file into the API package
+    ```sh
+      POSTGRES_USERNAME="AnyName"
+      POSTGRES_PASSWORD="YourPassword"
+      POSTGRES_DATABASE="postgres"
+      POSTGRES_HOST="localhost"
+      POSTGRES_PORT="5432"
+    ```
 
 ## 📄 License
 
