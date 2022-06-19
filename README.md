@@ -50,6 +50,23 @@ As discussed on the previous section, in this project I don't want just do the a
       POSTGRES_HOST="localhost"
       POSTGRES_PORT="5432"
     ```
+    
+4. Create your Redis database
+      - Using docker:
+      
+    ```sh
+     docker run --name AnyName -p 6379:6379 -e REDIS_ARGS="--requirepass YourPassword" -d redis
+    ```
+    
+      - Using Redis CLI:
+      Check the official documentation [here](https://redis.io/commands/config-get)
+    
+5. Add your Redis credentials to the .env file into the API package
+    ```sh
+      REDIS_HOST="localhost"
+      REDIS_PORT="6379"
+      REDIS_PASSWORD="YourPassword"
+      ```
 
 ## 📄 License
 
