@@ -13,7 +13,7 @@ export interface Database {
    * @param query The query to be executed.
    * @returns The result of the query.
    */
-  query<Type>(query: string): Promise<Type>;
+  query<Type>(query: string): Promise<Type[]>;
 
   /**
    * Queries the cached data for the given key and returns the result.
@@ -88,9 +88,9 @@ export interface DatabaseDataSource {
    * Runs a query on the database and returns the result.
    * 
    * @param query The query to be executed.
-   * @returns The result of the query.
+   * @returns The row results of the query.
    */
-  query<Type>(query: string): Promise<Type>;
+  query<Type>(query: string): Promise<Type[]>;
 
   /**
    * @deprecated It will be removed soon.
