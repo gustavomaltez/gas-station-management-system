@@ -1,30 +1,19 @@
-import path from 'path';
+import { Client as PostgresClient } from 'pg';
 import * as redis from 'redis';
-import { DataSource as TypeORMDataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 
+import { initializeDatabaseSchema } from '../helpers';
 import { DataSource } from '../types';
 
-// TypeORM Data Sources --------------------------------------------------------
+// Database clients ------------------------------------------------------------
 
-export const sqliteDataSource = new TypeORMDataSource({
-  type: 'sqlite',
-  database: path.resolve(__dirname, '../../database.sqlite'),
-  synchronize: true,
-  entities: [path.resolve(__dirname, '../../entities/*.entity.ts')],
-});
-
-export const postgresDataSource = new TypeORMDataSource({
-  type: 'postgres',
+const postgresClient = new PostgresClient({
   host: process.env.POSTGRES_HOST,
-  port: process.env.POSTGRES_PORT ? Number(process.env.POSTGRES_PORT) : 5432,
-  username: process.env.POSTGRES_USERNAME,
+  port: Number(process.env.POSTGRES_PORT),
+  user: process.env.POSTGRES_USERNAME,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DATABASE,
-  synchronize: true,
-  entities: [path.resolve(__dirname, '../../entities/*.entity.ts')],
 });
-
-// Redis Data Sources ----------------------------------------------------------
 
 const redisClient = redis.createClient({
   password: process.env.REDIS_PASSWORD,
@@ -33,25 +22,35 @@ const redisClient = redis.createClient({
 
 // Data Source Objects ---------------------------------------------------------
 
+// ToDo: Remove it later
+let _isDatabaseReady = false;
+
 export const defaultDataSource: DataSource = {
   cache: {
     get: redisClient.get.bind(redisClient),
     set: redisClient.set.bind(redisClient),
-    delete: async (key: string) => {
+    delete: async function (key: string) {
       const response = await redisClient.del(key);
       if (response === 0) throw new Error(`Unable to delete cached data for key: ${key}`);
     },
   },
   database: {
-    query: postgresDataSource.query.bind(postgresDataSource),
-    getRepository: postgresDataSource.getRepository.bind(postgresDataSource),
+    query: async function <Type>(query: string) {
+      await postgresClient.connect();
+      const result = await postgresClient.query(query);
+      await postgresClient.end();
+      return result.rows as Type[];
+    },
+    getRepository: () => null as unknown as Repository<any>,
   },
-  initialize: async () => {
-    if (postgresDataSource.isInitialized) return;
+  initialize: async function () {
+    if (_isDatabaseReady) return;
     const promises = [
-      postgresDataSource.initialize.bind(postgresDataSource),
+      postgresClient.connect.bind(postgresClient),
       redisClient.connect.bind(redisClient),
+      initializeDatabaseSchema(this.database.query)
     ];
+    _isDatabaseReady = true;
     await Promise.all(promises);
   },
 };
