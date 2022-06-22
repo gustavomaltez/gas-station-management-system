@@ -1,6 +1,5 @@
 import { Client as PostgresClient } from 'pg';
 import * as redis from 'redis';
-import { Repository } from 'typeorm';
 
 import { initializeDatabaseSchema } from '../helpers';
 import { DataSource } from '../types';
@@ -40,8 +39,7 @@ export const defaultDataSource: DataSource = {
       const result = await postgresClient.query(query);
       await postgresClient.end();
       return result.rows as Type[];
-    },
-    getRepository: () => null as unknown as Repository<any>,
+    }
   },
   initialize: async function () {
     if (_isDatabaseReady) return;

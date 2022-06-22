@@ -1,5 +1,3 @@
-import { EntityTarget, Repository } from 'typeorm';
-
 /**
  * Represents a database instance. 
  * 
@@ -37,15 +35,6 @@ export interface Database {
    * @param key The key of the cached data.
    */
   deleteCachedData(key: string): Promise<void>;
-
-  /**
-   * @deprecated It will be removed soon.
-   * Returns a repository instance for the given entity.
-   * 
-   * @param entity The entity associated to the repository to be retrieved.
-   * @returns The repository instance.
-   */
-  getRepository<EntityType>(entity: EntityTarget<EntityType>): Promise<Repository<EntityType>>;
 }
 
 /**
@@ -91,15 +80,6 @@ export interface DatabaseDataSource {
    * @returns The row results of the query.
    */
   query<Type>(query: string): Promise<Type[]>;
-
-  /**
-   * @deprecated It will be removed soon.
-   * Returns a repository instance for the given entity.
-   * 
-   * @param entity The entity associated to the repository to be retrieved.
-   * @returns The repository instance.
-   */
-  getRepository<EntityType>(entity: EntityTarget<EntityType>): Repository<EntityType>;
 }
 
 /**

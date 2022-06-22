@@ -1,8 +1,5 @@
-import { EntityTarget } from 'typeorm';
-
 import { defaultDataSource } from './datasources';
 import { Database as IDatabase, DataSource } from './types';
-
 
 class Database implements IDatabase {
 
@@ -12,7 +9,6 @@ class Database implements IDatabase {
     // Methods binding ---------------------------------------------------------
     this.query = this.query.bind(this);
     this.getCachedData = this.getCachedData.bind(this);
-    this.getRepository = this.getRepository.bind(this);
   }
 
   // In-disk database methods --------------------------------------------------
@@ -37,14 +33,6 @@ class Database implements IDatabase {
   async deleteCachedData(key: string): Promise<void> {
     await this.dataSource.initialize();
     return this.dataSource.cache.delete(key);
-  }
-
-  /**
-   * @deprecated It will be removed soon.
-   *  ToDo: Remove this method later
-   */
-  async getRepository<EntityType>(entity: EntityTarget<EntityType>) {
-    return this.dataSource.database.getRepository<EntityType>(entity);
   }
 }
 
