@@ -9,7 +9,7 @@ export async function initializeDatabaseSchema(query: Database['query']) {
   await query(`
     CREATE TABLE IF NOT EXISTS employee (
       id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-      cpf VARCHAR(11),
+      cpf VARCHAR(14),
       name VARCHAR(100),
       email VARCHAR(100),
       password VARCHAR(100),
