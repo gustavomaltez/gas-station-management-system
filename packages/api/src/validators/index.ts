@@ -1,8 +1,4 @@
-import { Repository } from 'typeorm';
-
-import { Administrator, Employee } from '../entities';
-import { DuplicatedUserCredentials, InvalidUserCPF, InvalidUserEmail, InvalidUserEmailOrPassword } from '../errors';
-import { hashedStringMatches, isValidString, toArray } from '../utils';
+import { InvalidUserCPF, InvalidUserEmail } from '../errors';
 
 // About the validators --------------------------------------------------------
 
@@ -39,46 +35,46 @@ export function validateCPFStructure(cpf: string) {
     throw new InvalidUserCPF(cpf);
 }
 
-/**
- * Validates if the provided email and cpf is not already in use. Throws an error if so.
- * 
- * @param repositoryOrRepositories The repository to be used to find the user.
- * @param email The email to be used to find an user.
- * @param cpf The cpf to be used to find an user.
- */
-export async function validateDuplicatedUserByEmailOrCPF(
-  repositoryOrRepositories: Repository<Employee | Administrator> | Repository<Employee | Administrator>[],
-  email: string,
-  cpf: string
-) {
-  const repositories = toArray(repositoryOrRepositories);
+// /**
+//  * Validates if the provided email and cpf is not already in use. Throws an error if so.
+//  * 
+//  * @param repositoryOrRepositories The repository to be used to find the user.
+//  * @param email The email to be used to find an user.
+//  * @param cpf The cpf to be used to find an user.
+//  */
+// export async function validateDuplicatedUserByEmailOrCPF(
+//   repositoryOrRepositories: Repository<Employee | Administrator> | Repository<Employee | Administrator>[],
+//   email: string,
+//   cpf: string
+// ) {
+//   const repositories = toArray(repositoryOrRepositories);
 
-  const promisses = repositories.map(repository => repository.findOne({ where: { email, cpf } }));
-  const users = await Promise.all(promisses);
-  const userWithProvidedEmailAlreadyExists = users.some(user => !!user);
+//   const promisses = repositories.map(repository => repository.findOne({ where: { email, cpf } }));
+//   const users = await Promise.all(promisses);
+//   const userWithProvidedEmailAlreadyExists = users.some(user => !!user);
 
-  if (userWithProvidedEmailAlreadyExists) throw new DuplicatedUserCredentials(email, cpf);
-}
+//   if (userWithProvidedEmailAlreadyExists) throw new DuplicatedUserCredentials(email, cpf);
+// }
 
-/**
- * Validates if an user exists.
- * 
- * @param user The user to be validated.
- * @return user an valid user instance (this is a workaround to make sure all
- * the code after this function call will handle `user` as a defined value)
- */
-export function validateUser(user: Administrator | Employee | null): Administrator | Employee {
-  if (!user) throw new InvalidUserEmailOrPassword();
-  return user;
-}
+// /**
+//  * Validates if an user exists.
+//  * 
+//  * @param user The user to be validated.
+//  * @return user an valid user instance (this is a workaround to make sure all
+//  * the code after this function call will handle `user` as a defined value)
+//  */
+// export function validateUser(user: Administrator | Employee | null): Administrator | Employee {
+//   if (!user) throw new InvalidUserEmailOrPassword();
+//   return user;
+// }
 
-/**
- * Checks if the provided user password matches the one stored in the database. Throws an error if not.
- * 
- * @param user The user to be validated.
- * @param password The provided password to try to match the user.
- */
-export function validateUserPassword(user: Administrator | Employee | null, password: string) {
-  if (!user || !isValidString(password) || !hashedStringMatches(password, user.password))
-    throw new InvalidUserEmailOrPassword();
-}
+// /**
+//  * Checks if the provided user password matches the one stored in the database. Throws an error if not.
+//  * 
+//  * @param user The user to be validated.
+//  * @param password The provided password to try to match the user.
+//  */
+// export function validateUserPassword(user: Administrator | Employee | null, password: string) {
+//   if (!user || !isValidString(password) || !hashedStringMatches(password, user.password))
+//     throw new InvalidUserEmailOrPassword();
+// }
