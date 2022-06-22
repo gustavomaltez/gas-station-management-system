@@ -93,9 +93,21 @@ export class DefaultAuthenticationService extends AuthenticationService {
 
   async createUser(data: CreateUserDTO): Promise<Employee> {
     this.validateUserDataStructure(data);
-
+    const user = new Employee({
+      address: {
+        number: 1,
+        postalCode: '01001000',
+        street: 'Rua Teste'
+      },
+      cpf: data.cpf,
+      email: data.email,
+      name: data.name,
+      password: hashString(data.password),
+      salary: data.salary,
+      isAdminUser: data.isAdminRoot
+    });
     // ToDo:return user without sensitive data
-    return Promise.resolve() as any as Employee;
+    return this.repository.create(user);
   }
 
   async login(email: string, password: string): Promise<UserTokens> {
