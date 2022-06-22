@@ -2,11 +2,13 @@ import express from 'express';
 
 import { AuthenticationController } from '../controllers';
 import { database } from '../database/database';
+import { EmployeeRepository } from '../repositories/Employee.repository';
 import { DefaultAuthenticationService } from '../services';
 
 // Controller instantiation ----------------------------------------------------
 
-const service = new DefaultAuthenticationService(database);
+const repository = new EmployeeRepository(database);
+const service = new DefaultAuthenticationService(repository);
 const controller = new AuthenticationController(service);
 
 // Routing ---------------------------------------------------------------------
