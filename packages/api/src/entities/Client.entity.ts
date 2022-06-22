@@ -10,9 +10,9 @@ interface Phones {
 }
 
 export class Client {
-  cpf: string;
-  name: string;
-  address: Address;
-  birthDate: Date;
-  phones: Phones;
+  cpf?: string;
+  name?: string;
+  address?: Address;
+  birthDate?: Date;
+  phones?: Phones;
 }

@@ -1,6 +1,6 @@
 export class Fuel {
-  id: string;
-  litersAvailable: number;
-  pricePerLiter: number;
-  name: string;
+  id?: string;
+  litersAvailable?: number;
+  pricePerLiter?: number;
+  name?: string;
 }
