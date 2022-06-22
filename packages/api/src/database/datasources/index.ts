@@ -1,4 +1,4 @@
-import { Client as PostgresClient } from 'pg';
+import { Pool as PostgresPool } from 'pg';
 import * as redis from 'redis';
 
 import { initializeDatabaseSchema } from '../helpers';
@@ -6,7 +6,7 @@ import { DataSource } from '../types';
 
 // Database clients ------------------------------------------------------------
 
-const postgresClient = new PostgresClient({
+const postgresPool = new PostgresPool({
   host: process.env.POSTGRES_HOST,
   port: Number(process.env.POSTGRES_PORT),
   user: process.env.POSTGRES_USERNAME,
@@ -34,17 +34,15 @@ export const defaultDataSource: DataSource = {
     },
   },
   database: {
-    query: async function <Type>(query: string) {
-      await postgresClient.connect();
-      const result = await postgresClient.query(query);
-      await postgresClient.end();
+    query: async function <Type>(query: string, params?: (string | number | boolean)[]) {
+      const result = await postgresPool.query(query, params);
       return result.rows as Type[];
     }
   },
   initialize: async function () {
     if (_isDatabaseReady) return;
     const promises = [
-      postgresClient.connect.bind(postgresClient),
+      postgresPool.connect.bind(postgresPool),
       redisClient.connect.bind(redisClient),
       initializeDatabaseSchema(this.database.query)
     ];
