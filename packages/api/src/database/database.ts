@@ -13,9 +13,9 @@ class Database implements IDatabase {
 
   // In-disk database methods --------------------------------------------------
 
-  async query<Type>(query: string): Promise<Type[]> {
+  async query<Type>(query: string, params?: (string | number | boolean)[]): Promise<Type[]> {
     await this.dataSource.initialize();
-    return this.dataSource.database.query(query);
+    return this.dataSource.database.query(query, params);
   }
 
   // In-memory database methods ------------------------------------------------

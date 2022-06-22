@@ -8,10 +8,18 @@ export interface Database {
   /**
    * Runs a query on the database and returns the result.
    * 
+   * @example
+   * // You can query using parameters like this:
+   * query('SELECT * FROM users WHERE id = $1', [id]);
+   * 
+   * // Or you can query using just a string:
+   * query(`SELECT * FROM users WHERE id = ${id}`);
+   * 
    * @param query The query to be executed.
+   * @param params Optional parameters to be used in the query.
    * @returns The result of the query.
    */
-  query<Type>(query: string): Promise<Type[]>;
+  query<Type>(query: string, params?: (string | number | boolean)[]): Promise<Type[]>;
 
   /**
    * Queries the cached data for the given key and returns the result.
@@ -76,10 +84,18 @@ export interface DatabaseDataSource {
   /**
    * Runs a query on the database and returns the result.
    * 
+   * @example
+   * // You can query using parameters like this:
+   * query('SELECT * FROM users WHERE id = $1', [id]);
+   * 
+   * // Or you can query using just a string:
+   * query(`SELECT * FROM users WHERE id = ${id}`);
+   * 
    * @param query The query to be executed.
-   * @returns The row results of the query.
+   * @param params Optional parameters to be used in the query.
+   * @returns The result of the query.
    */
-  query<Type>(query: string): Promise<Type[]>;
+  query<Type>(query: string, params?: (string | number | boolean)[]): Promise<Type[]>;
 }
 
 /**
