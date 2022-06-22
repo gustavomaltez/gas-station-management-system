@@ -29,7 +29,7 @@ export async function initializeDatabaseSchema(query: Database['query']) {
     
     CREATE TABLE IF NOT EXISTS client (
       cpf VARCHAR(20) PRIMARY KEY NOT NULL,
-      full_name VARCHAR(100),
+      name VARCHAR(100),
       address_street VARCHAR(100),
       address_number REAL,
       address_postal_code VARCHAR(20),
@@ -38,18 +38,22 @@ export async function initializeDatabaseSchema(query: Database['query']) {
       secondary_phone_number VARCHAR(20)
     );
     
+    --CREATE TYPE vehicle_type AS ENUM ('car', 'motorcycle', 'truck', 'other');
+    
     CREATE TABLE IF NOT EXISTS vehicle (
       registration_plate VARCHAR(20) PRIMARY KEY NOT NULL,
-      type VARCHAR(20),
+      type vehicle_type DEFAULT 'other',
       brand VARCHAR(20),
       client_id VARCHAR(20) references client(cpf)
     );
-        
+    
+    --CREATE TYPE payment_method AS ENUM ('money', 'credit_card');
+    
     CREATE TABLE IF NOT EXISTS invoice (
       id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
       issuance_date DATE DEFAULT CURRENT_DATE,
       value REAL,
-      payment_method VARCHAR(20),
+      payment_method payment_method,
       employee_id uuid references employee(id),
       fuel_id uuid references fuel(id),
       vehicle_id VARCHAR(20) references vehicle(registration_plate)
