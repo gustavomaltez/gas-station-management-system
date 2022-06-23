@@ -1,6 +1,7 @@
 import { Employee } from '../entities';
 import { DuplicatedUserCredentials, InvalidUserCPF, InvalidUserEmail } from '../errors';
 import { EmployeeRepository } from '../repositories/Employee.repository';
+import { concatenateAndFormatStrings } from '../utils';
 
 // About the validators --------------------------------------------------------
 
@@ -69,4 +70,23 @@ export function validateCPFStructure(cpf: string) {
 export async function validateDuplicatedEmployee(employee: Employee, repository: EmployeeRepository) {
   const isAlreadyInUse = await repository.emailOrCpfIsAlreadyInUse(employee.email, employee.cpf);
   if (isAlreadyInUse) throw new DuplicatedUserCredentials(employee.email, employee.cpf);
+}
+
+/**
+ * For a given object, checks if the object has all the required properties. Throws an error if not.
+ * 
+ * @param objectName The name of the object to be validated.
+ * @param object The object to be validated.
+ * @param properties An list matching the required object properties.
+ */
+export function validateRequiredObjectProperties(
+  objectName: string,
+  object: any,
+  properties: string[]
+): void {
+  const invalidProperties = properties.filter(property => !object[property]);
+  if (invalidProperties.length < 0) return;
+  const formattedInvalidProperties = concatenateAndFormatStrings(invalidProperties);
+  // ToDo: create a new error type for this
+  throw new Error(`The ${objectName} object have the following properties missing: ${formattedInvalidProperties}`);
 }
