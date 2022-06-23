@@ -1,4 +1,6 @@
-import { InvalidUserCPF, InvalidUserEmail } from '../errors';
+import { Employee } from '../entities';
+import { DuplicatedUserCredentials, InvalidUserCPF, InvalidUserEmail } from '../errors';
+import { EmployeeRepository } from '../repositories/Employee.repository';
 
 // About the validators --------------------------------------------------------
 
@@ -36,27 +38,6 @@ export function validateCPFStructure(cpf: string) {
 }
 
 // /**
-//  * Validates if the provided email and cpf is not already in use. Throws an error if so.
-//  * 
-//  * @param repositoryOrRepositories The repository to be used to find the user.
-//  * @param email The email to be used to find an user.
-//  * @param cpf The cpf to be used to find an user.
-//  */
-// export async function validateDuplicatedUserByEmailOrCPF(
-//   repositoryOrRepositories: Repository<Employee | Administrator> | Repository<Employee | Administrator>[],
-//   email: string,
-//   cpf: string
-// ) {
-//   const repositories = toArray(repositoryOrRepositories);
-
-//   const promisses = repositories.map(repository => repository.findOne({ where: { email, cpf } }));
-//   const users = await Promise.all(promisses);
-//   const userWithProvidedEmailAlreadyExists = users.some(user => !!user);
-
-//   if (userWithProvidedEmailAlreadyExists) throw new DuplicatedUserCredentials(email, cpf);
-// }
-
-// /**
 //  * Validates if an user exists.
 //  * 
 //  * @param user The user to be validated.
@@ -78,3 +59,14 @@ export function validateCPFStructure(cpf: string) {
 //   if (!user || !isValidString(password) || !hashedStringMatches(password, user.password))
 //     throw new InvalidUserEmailOrPassword();
 // }
+
+/**
+ * Checks if already exists an employee with the provided email or cpf. Throws an error if so.
+ * 
+ * @param employee The employee to be validated.
+ * @param repository The repository to be used to find the employee.
+ */
+export async function validateDuplicatedEmployee(employee: Employee, repository: EmployeeRepository) {
+  const isAlreadyInUse = await repository.emailOrCpfIsAlreadyInUse(employee.email, employee.cpf);
+  if (isAlreadyInUse) throw new DuplicatedUserCredentials(employee.email, employee.cpf);
+}
