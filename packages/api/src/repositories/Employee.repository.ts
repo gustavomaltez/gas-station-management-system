@@ -4,14 +4,14 @@ import { BaseRepository } from './base';
 export class EmployeeRepository extends BaseRepository {
 
   async create(employee: Employee): Promise<Employee> {
-    const { email, cpf, password, address, name, salary, isAdminUser } = employee;
+    const { email, cpf, password, address, name, salary, isAdmin } = employee;
     const { street, number, postalCode } = address;
 
     const result = await this.database.query<{ id: string; }>(`
     INSERT INTO employee 
-    (cpf, "name", email, "password", salary, address_street, address_number, address_postal_code, is_admin_user) 
+    (cpf, "name", email, "password", salary, address_street, address_number, address_postal_code, is_admin) 
     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id;`,
-      [cpf, name, email, password, salary, street, number, postalCode, isAdminUser]
+      [cpf, name, email, password, salary, street, number, postalCode, isAdmin]
     );
 
     employee.id = result[0].id;
