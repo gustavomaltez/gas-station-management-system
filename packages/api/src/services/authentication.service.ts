@@ -1,7 +1,12 @@
 import { Employee } from '../entities';
 import { EmployeeRepository } from '../repositories/Employee.repository';
 import { generateEmployeeTokens } from '../utils';
-import { validateCPFStructure, validateDuplicatedEmployee, validateEmailStructure } from '../validators';
+import {
+  validateCPFStructure,
+  validateDuplicatedEmployee,
+  validateEmailStructure,
+  validateRequiredObjectProperties,
+} from '../validators';
 
 // DTO's -----------------------------------------------------------------------
 
@@ -16,7 +21,7 @@ interface RegisterEmployeeDTO {
     postalCode: string;
     number: number;
   };
-  isAdminUser: boolean;
+  isAdmin: boolean;
 }
 
 interface UserTokens {
@@ -31,7 +36,6 @@ interface UserTokens {
  * All authentication services *MUST* extend this class.
  */
 export abstract class AuthenticationService {
-
 
   constructor(protected readonly repository: EmployeeRepository) { }
 
@@ -73,6 +77,10 @@ export class DefaultAuthenticationService extends AuthenticationService {
   }
 
   async register(data: RegisterEmployeeDTO): Promise<UserTokens> {
+
+    validateRequiredObjectProperties("params", data, ['cpf', 'name', 'email', 'password', 'salary', 'isAdmin', 'address']);
+    validateRequiredObjectProperties("address", data.address, ['street', 'postalCode', 'number']);
+
     const employee = new Employee(data);
 
     validateCPFStructure(employee.cpf);
