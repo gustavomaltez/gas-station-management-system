@@ -39,18 +39,6 @@ export function validateCPFStructure(cpf: string) {
 }
 
 // /**
-//  * Validates if an user exists.
-//  * 
-//  * @param user The user to be validated.
-//  * @return user an valid user instance (this is a workaround to make sure all
-//  * the code after this function call will handle `user` as a defined value)
-//  */
-// export function validateUser(user: Administrator | Employee | null): Administrator | Employee {
-//   if (!user) throw new InvalidUserEmailOrPassword();
-//   return user;
-// }
-
-// /**
 //  * Checks if the provided user password matches the one stored in the database. Throws an error if not.
 //  * 
 //  * @param user The user to be validated.
@@ -85,7 +73,7 @@ export function validateRequiredObjectProperties(
   properties: string[]
 ): void {
   const invalidProperties = properties.filter(property => !object[property]);
-  if (invalidProperties.length < 0) return;
+  if (invalidProperties.length === 0) return;
   const formattedInvalidProperties = concatenateAndFormatStrings(invalidProperties);
   // ToDo: create a new error type for this
   throw new Error(`The ${objectName} object have the following properties missing: ${formattedInvalidProperties}`);

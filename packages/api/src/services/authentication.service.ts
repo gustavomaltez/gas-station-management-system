@@ -1,6 +1,6 @@
 import { Employee } from '../entities';
 import { EmployeeRepository } from '../repositories/Employee.repository';
-import { generateEmployeeTokens } from '../utils';
+import { generateEmployeeTokens, hashString } from '../utils';
 import {
   validateCPFStructure,
   validateDuplicatedEmployee,
@@ -81,7 +81,8 @@ export class DefaultAuthenticationService extends AuthenticationService {
     validateRequiredObjectProperties("params", data, ['cpf', 'name', 'email', 'password', 'salary', 'address']);
     validateRequiredObjectProperties("address", data.address, ['street', 'postalCode', 'number']);
 
-    const employee = new Employee(data);
+    const dataWithHashedPassword = { ...data, password: hashString(data.password) };
+    const employee = new Employee(dataWithHashedPassword);
 
     validateCPFStructure(employee.cpf);
     validateEmailStructure(employee.email);
