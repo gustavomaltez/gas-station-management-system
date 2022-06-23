@@ -10,17 +10,13 @@ export class AuthenticationController {
   }
 
   async register(req: Request, res: Response) {
-    const { name, email, password, cpf, isAdmin, isAdminRoot, salary } = req.body;
-    const type = isAdmin ? 'admin' : 'employee';
-    const user = await this.service.createUser({
-      name, email, password, cpf, type, isAdminRoot, salary
-    });
+    const user = await this.service.register(req.body);
     res.status(200).json(user);
   }
 
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
-    const token = await this.service.login(email,password);
+    const token = await this.service.login(email, password);
     res.status(200).json({ token });
   }
 }
