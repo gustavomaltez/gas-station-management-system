@@ -8,4 +8,5 @@
   "editor.trimAutoWhitespace": false,
   "editor.renderWhitespace": "all",
   "typescriptHero.imports.organizeOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
 }
