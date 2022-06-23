@@ -11,8 +11,9 @@ interface BaseEmployeeData {
   password: string;
   salary: number;
   address: Address;
-  isAdminUser: boolean;
+  isAdmin?: boolean;
 }
+
 export class Employee implements BaseEmployeeData {
   private _id: string | null;
   readonly cpf: string;
@@ -21,7 +22,7 @@ export class Employee implements BaseEmployeeData {
   readonly password: string;
   readonly salary: number;
   readonly address: Address;
-  readonly isAdminUser: boolean;
+  readonly isAdmin: boolean;
 
   constructor(data: BaseEmployeeData) {
     this.address = data.address;
@@ -30,7 +31,7 @@ export class Employee implements BaseEmployeeData {
     this.name = data.name;
     this.password = data.password;
     this.salary = data.salary;
-    this.isAdminUser = data.isAdminUser;
+    this.isAdmin = data.isAdmin ?? false;
     this._id = null;
   }
 

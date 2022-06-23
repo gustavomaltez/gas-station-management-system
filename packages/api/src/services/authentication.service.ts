@@ -78,7 +78,7 @@ export class DefaultAuthenticationService extends AuthenticationService {
 
   async register(data: RegisterEmployeeDTO): Promise<UserTokens> {
 
-    validateRequiredObjectProperties("params", data, ['cpf', 'name', 'email', 'password', 'salary', 'isAdmin', 'address']);
+    validateRequiredObjectProperties("params", data, ['cpf', 'name', 'email', 'password', 'salary', 'address']);
     validateRequiredObjectProperties("address", data.address, ['street', 'postalCode', 'number']);
 
     const employee = new Employee(data);
