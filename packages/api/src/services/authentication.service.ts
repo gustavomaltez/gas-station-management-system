@@ -1,23 +1,22 @@
 import { Employee } from '../entities';
 import { EmployeeRepository } from '../repositories/Employee.repository';
-import { hashString } from '../utils';
-import { validateCPFStructure, validateEmailStructure } from '../validators';
+import { generateEmployeeTokens } from '../utils';
+import { validateCPFStructure, validateDuplicatedEmployee, validateEmailStructure } from '../validators';
 
 // DTO's -----------------------------------------------------------------------
 
-interface CreateUserDTO {
-  // Shared properties
+interface RegisterEmployeeDTO {
   cpf: string;
   name: string;
   email: string;
   password: string;
-
-  // Specification properties
   salary: number;
-  isAdminRoot: boolean;
-
-  // Other properties
-  type: 'admin' | 'employee';
+  address: {
+    street: string;
+    postalCode: string;
+    number: number;
+  };
+  isAdminUser: boolean;
 }
 
 interface UserTokens {
@@ -37,44 +36,27 @@ export abstract class AuthenticationService {
   constructor(protected readonly repository: EmployeeRepository) { }
 
   /**
-   * Creates a new user entry into database.
+   * Registers a new employee
    * 
-   * @param user The user to be created into the database.
+   * @param employee The employee data to be saved into the database.
+   * @returns The employee access token and refresh token.
    */
-  abstract createUser(user: CreateUserDTO): Promise<Employee>;
+  abstract register(employee: RegisterEmployeeDTO): Promise<UserTokens>;
 
   /**
-   * Authenticates a user and returns the authentication token
+   * Authenticates an employee and returns the authentication token
    * 
    * @param email The user email.
    * @param password The user password.
    */
   abstract login(email: string, password: string): Promise<UserTokens>;
 
-  // Protected utility methods -------------------------------------------------
-
   /**
-   * Hashes the user password and returns the provided user data with the hashed password
+   * Logout an employee by invalidating the employee tokens.
    * 
-   * @param user The user data used to create a user
-   * @returns The same user data but with the password hashed
+   * @param token An employee authentication token to be invalidated.
    */
-  protected hashUserPassword(user: CreateUserDTO): CreateUserDTO {
-    return {
-      ...user,
-      password: hashString(user.password)
-    };
-  }
-
-  /**
-   * Validates if the user data follow the standards for email and cpf
-   * 
-   * @param user The user data to be validated.
-   */
-  protected validateUserDataStructure({ email, cpf }: CreateUserDTO): void {
-    validateEmailStructure(email);
-    validateCPFStructure(cpf);
-  }
+  abstract logout(token: string): Promise<void>;
 }
 
 // Implementations -------------------------------------------------------------
@@ -85,29 +67,20 @@ export class DefaultAuthenticationService extends AuthenticationService {
     super(repository);
 
     // Methods binding ---------------------------------------------------------
-
-    this.createUser = this.createUser.bind(this);
-    this.hashUserPassword = this.hashUserPassword.bind(this);
-    this.validateUserDataStructure = this.validateUserDataStructure.bind(this);
+    this.register = this.register.bind(this);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
-  async createUser(data: CreateUserDTO): Promise<Employee> {
-    this.validateUserDataStructure(data);
-    const user = new Employee({
-      address: {
-        number: 1,
-        postalCode: '01001000',
-        street: 'Rua Teste'
-      },
-      cpf: data.cpf,
-      email: data.email,
-      name: data.name,
-      password: hashString(data.password),
-      salary: data.salary,
-      isAdminUser: data.isAdminRoot
-    });
-    // ToDo:return user without sensitive data
-    return this.repository.create(user);
+  async register(data: RegisterEmployeeDTO): Promise<UserTokens> {
+    const employee = new Employee(data);
+
+    validateCPFStructure(employee.cpf);
+    validateEmailStructure(employee.email);
+    await validateDuplicatedEmployee(employee, this.repository);
+
+    const createdEmployee = await this.repository.create(employee);
+    return generateEmployeeTokens(createdEmployee);
   }
 
   async login(email: string, password: string): Promise<UserTokens> {
@@ -118,5 +91,8 @@ export class DefaultAuthenticationService extends AuthenticationService {
     // return generateUserTokens(validUser);
     return Promise.resolve() as any as Promise<UserTokens>;
   }
-}
 
+  async logout(token: string): Promise<void> {
+    return Promise.resolve();
+  }
+}
