@@ -18,7 +18,7 @@ export class EmployeeRepository extends BaseRepository {
     return employee;
   }
 
-  async hasEmployeeWithSameEmailOrCpf(email: string, cpf: string) {
+  async emailOrCpfIsAlreadyInUse(email: string, cpf: string) {
     const employees = await this.database.query(`select * from employee where email = '${email}' or cpf = '${cpf}'`);
     return employees.length > 0;
   }
