@@ -25,7 +25,7 @@ export function Input(props: InputProps): JSX.Element {
 function InputBox(props: InputProps): JSX.Element {
   return (
     <input
-      className="outline-none block border-2 w-full rounded-lg py-2 px-2 hover:border-blue-200 tracking-wide text-gray-700 text-xs rounded-md"
+      className="outline-none block border-2 w-full px-2 hover:border-blue-200 tracking-wide text-gray-700 text-xs rounded-md h-10"
       type="text"
       {...props}
     />

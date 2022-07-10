@@ -29,7 +29,7 @@ export function Button(props: ButtonProps): JSX.Element {
 
 // Data ------------------------------------------------------------------------
 
-const defaultClassName: ClassName = 'block w-full h-min  text-white text-sm px-5 py-2.5 text-center rounded-lg hover:bg-blue-600 font-medium';
+const defaultClassName: ClassName = 'block w-full text-white text-sm px-5 text-center rounded-lg hover:bg-blue-600 font-medium h-11';
 const themes: Record<ButtonTheme, ClassName> = {
   primary: 'bg-blue-500',
   secondary: 'text-blue-500 hover:text-white border border-blue-500',
