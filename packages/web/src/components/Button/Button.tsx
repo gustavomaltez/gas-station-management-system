@@ -10,7 +10,7 @@ export enum ButtonTheme {
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
   label?: string;
-  theme: ButtonTheme;
+  theme?: ButtonTheme;
 }
 
 // Component -------------------------------------------------------------------
@@ -37,6 +37,6 @@ const themes: Record<ButtonTheme, ClassName> = {
 
 // Helpers ---------------------------------------------------------------------
 
-function buildClassName(props: ButtonProps): string {
-  return [defaultClassName, themes[props.theme]].join(' ');
+function buildClassName({ theme = ButtonTheme.primary }: ButtonProps): string {
+  return [defaultClassName, themes[theme]].join(' ');
 };

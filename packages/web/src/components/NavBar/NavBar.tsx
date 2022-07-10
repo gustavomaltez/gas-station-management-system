@@ -1,6 +1,5 @@
 // Types declarations ----------------------------------------------------------
 
-
 interface Item {
   /**
    * Whether the item should be rendered as a divider.
@@ -32,13 +31,32 @@ interface Item {
 }
 
 interface NavBarProps {
+  /**
+   * The items to be rendered in the navbar.
+   */
   items: Item[];
+
+  /**
+   * A element to be rendered at the top of the navbar.
+   */
+  header?: JSX.Element;
+
+  /**
+   * A element to be rendered at the bottom of the navbar.
+   */
+  footer?: JSX.Element;
 }
+
+// Component -------------------------------------------------------------------
 
 export function NavBar(props: NavBarProps): JSX.Element {
   return (
     <nav className="flex flex-col h-screen w-max max-w-sm bg-white border-r-2 border-gray-200 p-2">
-      {props.items.map(renderItem)}
+      {props.header}
+      <section className="flex flex-col h-full flex-1">
+        {props.items.map(renderItem)}
+      </section>
+      {props.footer}
     </nav>
   );
 }
@@ -55,7 +73,7 @@ function renderItem(item: Item): JSX.Element {
 function NavBarItem(props: Item): JSX.Element {
 
   function getLabelClassName(): string {
-    const defaultClassName = "text-base group-hover:text-blue-400";
+    const defaultClassName = "text-base group-hover:text-blue-400 font-semibold";
     if (!props.isSelected) return `${defaultClassName} text-slate-600`;
     return `${defaultClassName} text-blue-400`;
   }
@@ -78,7 +96,7 @@ function NavBarItem(props: Item): JSX.Element {
 
 function NavBarDivisor(props: Item): JSX.Element {
   return (
-    <span className="text-sm text-slate-600 font-bold uppercase">
+    <span className="text-sm text-slate-600 font-bold uppercase border-t border-slate-400 pt-2 mt-2 border-opacity-30">
       {props.label}
     </span>
   );
