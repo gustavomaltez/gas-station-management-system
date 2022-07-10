@@ -1,7 +1,5 @@
-import './App.css';
+import './index.css';
 
-function App() {
-  return (<p>Hello World!</p>);
+export function App(): JSX.Element {
+  return <div className="flex bg-red-900">Hello World2</div>;
 }
-
-export default App;
