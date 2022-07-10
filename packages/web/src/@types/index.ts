@@ -1,0 +1,1 @@
+export type ClassName = React.HTMLAttributes<HTMLElement>['className'];
