@@ -7,6 +7,23 @@ import { Database } from '../types';
 
 export async function initializeDatabaseSchema(query: Database['query']) {
   await query(`
+  
+    -- Types creation 
+    
+    DO $$ BEGIN
+        CREATE TYPE vehicle_type AS ENUM ('car', 'motorcycle', 'truck', 'other');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+    
+    DO $$ BEGIN
+        CREATE TYPE payment_method AS ENUM ('money', 'credit_card');
+    EXCEPTION
+        WHEN duplicate_object THEN null;
+    END $$;
+
+    -- Tables creation
+    
     CREATE TABLE IF NOT EXISTS employee (
       id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
       cpf VARCHAR(14) UNIQUE NOT NULL,
@@ -38,8 +55,7 @@ export async function initializeDatabaseSchema(query: Database['query']) {
       secondary_phone_number VARCHAR(20)
     );
     
-    --CREATE TYPE vehicle_type AS ENUM ('car', 'motorcycle', 'truck', 'other');
-    
+
     CREATE TABLE IF NOT EXISTS vehicle (
       registration_plate VARCHAR(20) PRIMARY KEY UNIQUE NOT NULL,
       type vehicle_type DEFAULT 'other',
@@ -47,7 +63,7 @@ export async function initializeDatabaseSchema(query: Database['query']) {
       client_id VARCHAR(20) references client(cpf)
     );
     
-    --CREATE TYPE payment_method AS ENUM ('money', 'credit_card');
+   
     
     CREATE TABLE IF NOT EXISTS invoice (
       id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
