@@ -1,0 +1,1 @@
+export { NavBarSlice as NavBar } from './NavBarSlice';

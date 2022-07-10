@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 // Types declarations ----------------------------------------------------------
 
 interface Item {
@@ -20,14 +22,9 @@ interface Item {
   icon?: (props: React.ComponentProps<'svg'>) => JSX.Element;
 
   /**
-   * Callback method to be executed once the item is clicked.
+   * The path related to the item. If the current path matches this path, the item will be selected.
    */
-  onClick?: () => void;
-
-  /**
-   * Whether the item should be displayed as active.
-   */
-  isSelected?: boolean;
+  path?: string;
 }
 
 interface NavBarProps {
@@ -63,6 +60,10 @@ export function NavBar(props: NavBarProps): JSX.Element {
 
 // Helpers ---------------------------------------------------------------------
 
+function isSelected(item: Item): boolean {
+  return !!item.path && window.location.pathname === item.path;
+}
+
 function renderItem(item: Item): JSX.Element {
   if (item.isDivider) return <NavBarDivisor label={item.label} />;
   return <NavBarItem {...item} />;
@@ -72,22 +73,40 @@ function renderItem(item: Item): JSX.Element {
 
 function NavBarItem(props: Item): JSX.Element {
 
+  // Hooks ---------------------------------------------------------------------
+
+  const navigateTo = useNavigate();
+
+  // Data ----------------------------------------------------------------------
+
+  const _isSelected = isSelected(props);
+  const Icon = props.icon;
+
+  // Utility -------------------------------------------------------------------
+
   function getLabelClassName(): string {
     const defaultClassName = "text-base group-hover:text-blue-400 font-semibold";
-    if (!props.isSelected) return `${defaultClassName} text-slate-600`;
+    if (!_isSelected) return `${defaultClassName} text-slate-600`;
     return `${defaultClassName} text-blue-400`;
   }
 
   function getIconClassName(): string {
     const defaultClassName = "h-6 w-6 group-hover:text-blue-500";
-    if (!props.isSelected) return defaultClassName;
+    if (!_isSelected) return defaultClassName;
     return `${defaultClassName} text-blue-500`;
   }
 
-  const Icon = props.icon;
+  function onClick(): void {
+    if (props.path) navigateTo(props.path);
+  }
+
+  // Rendering -----------------------------------------------------------------
 
   return (
-    <button className="group flex flex-row gap-2 items-center my-1">
+    <button
+      className="group flex flex-row gap-2 items-center my-1"
+      onClick={onClick}
+    >
       {!!Icon && <Icon className={getIconClassName()} />}
       <span className={getLabelClassName()}>{props.label}</span>
     </button>
