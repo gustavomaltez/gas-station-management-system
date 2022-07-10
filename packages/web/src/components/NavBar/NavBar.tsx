@@ -51,7 +51,7 @@ interface NavBarProps {
 
 export function NavBar(props: NavBarProps): JSX.Element {
   return (
-    <nav className="flex flex-col h-screen w-max max-w-sm bg-white border-r-2 border-gray-200 p-2">
+    <nav className="flex flex-col h-screen w-max max-w-sm bg-white border-r-2 border-gray-200 px-4 py-2">
       {props.header}
       <section className="flex flex-col h-full flex-1">
         {props.items.map(renderItem)}
