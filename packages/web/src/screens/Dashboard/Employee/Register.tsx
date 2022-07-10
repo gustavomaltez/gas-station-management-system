@@ -7,7 +7,7 @@ export function Register(): JSX.Element {
     <main className='w-screen h-screen flex flex-row'>
       <NavBar />
       <form className='flex flex-col items-center w-full p-8'>
-        <h1 className='text-2xl font-bold p-5'>Register New Client</h1>
+        <h1 className='text-2xl font-bold p-5'>Register New User</h1>
         <div className='flex flex-col w-full max-w-xl gap-4'>
           <div className='flex flex-row gap-2'>
             <Input label='Personal ID Number (CPF)' />
