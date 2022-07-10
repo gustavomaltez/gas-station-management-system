@@ -37,7 +37,7 @@ interface NavBarProps {
 
 export function NavBar(props: NavBarProps): JSX.Element {
   return (
-    <nav className="flex flex-col h-screen w-max max-w-sm bg-gray-100 border-r-2 border-gray-600 p-2">
+    <nav className="flex flex-col h-screen w-max max-w-sm bg-white border-r-2 border-gray-200 p-2">
       {props.items.map(renderItem)}
     </nav>
   );
@@ -55,13 +55,13 @@ function renderItem(item: Item): JSX.Element {
 function NavBarItem(props: Item): JSX.Element {
 
   function getLabelClassName(): string {
-    const defaultClassName = "text-base text-gray-800";
-    if (!props.isSelected) return defaultClassName;
-    return `${defaultClassName} text-blue-500`;
+    const defaultClassName = "text-base group-hover:text-blue-400";
+    if (!props.isSelected) return `${defaultClassName} text-slate-600`;
+    return `${defaultClassName} text-blue-400`;
   }
 
   function getIconClassName(): string {
-    const defaultClassName = "h-6 w-6";
+    const defaultClassName = "h-6 w-6 group-hover:text-blue-500";
     if (!props.isSelected) return defaultClassName;
     return `${defaultClassName} text-blue-500`;
   }
@@ -69,7 +69,7 @@ function NavBarItem(props: Item): JSX.Element {
   const Icon = props.icon;
 
   return (
-    <button className="flex flex-row gap-2 items-center my-1">
+    <button className="group flex flex-row gap-2 items-center my-1">
       {!!Icon && <Icon className={getIconClassName()} />}
       <span className={getLabelClassName()}>{props.label}</span>
     </button>
@@ -78,7 +78,7 @@ function NavBarItem(props: Item): JSX.Element {
 
 function NavBarDivisor(props: Item): JSX.Element {
   return (
-    <span className="text-sm text-gray-600 font-bold">
+    <span className="text-sm text-slate-600 font-bold uppercase">
       {props.label}
     </span>
   );

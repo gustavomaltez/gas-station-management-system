@@ -7,19 +7,19 @@ export function Dashboard(): JSX.Element {
     <div>
       <NavBar
         items={[
-          { label: "Clients", isDivider: true },
+          { label: "Dashboard", isDivider: true },
           { label: "Statistics", icon: UserIcon, isSelected: true },
+          { label: "Fuel", icon: UserIcon },
+
+          { label: "Clients", isDivider: true },
+          { label: "Statistics", icon: UserIcon },
           { label: "Register", icon: UserIcon },
           { label: "Edit", icon: UserIcon },
 
           { label: "Employees", isDivider: true },
-          { label: "Statistics", icon: UserIcon, isSelected: true },
+          { label: "Statistics", icon: UserIcon },
           { label: "Register", icon: UserIcon },
           { label: "Edit", icon: UserIcon },
-
-          { label: "Dashboard", isDivider: true },
-          { label: "Fuel", icon: UserIcon },
-          { label: "Statistics", icon: UserIcon },
 
           { label: "Finances", isDivider: true },
           { label: "Statistics", icon: UserIcon },
