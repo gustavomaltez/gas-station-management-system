@@ -9,4 +9,8 @@
   "editor.renderWhitespace": "all",
   "typescriptHero.imports.organizeOnSave": true,
   "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false,
+  },
 }
