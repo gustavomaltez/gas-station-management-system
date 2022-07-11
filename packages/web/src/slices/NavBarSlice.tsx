@@ -8,11 +8,14 @@ import {
   UserAddIcon,
   UserGroupIcon,
 } from '@heroicons/react/solid';
+import { useNavigate } from 'react-router-dom';
 
 import logo from '../assets/images/logo.png';
 import { Button, NavBar } from '../components';
 
 export function NavBarSlice(): JSX.Element {
+  const navigateTo = useNavigate();
+
   return (
     <NavBar
       items={[
@@ -33,7 +36,7 @@ export function NavBarSlice(): JSX.Element {
         { label: "Invoices", icon: DocumentTextIcon, path: "/dashboard/finances/invoices" },
       ]}
       header={<img src={logo} className="w-20 mx-auto" />}
-      footer={<Button label='Logout' />}
+      footer={<Button label='Logout' onClick={() => navigateTo('/')} />}
     />
   );
 }
