@@ -1,7 +1,11 @@
+import { UseFormRegister } from 'react-hook-form';
+
 // Types declarations ----------------------------------------------------------
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  id: string;
+  register: UseFormRegister<any>;
 }
 
 // Component -------------------------------------------------------------------
@@ -27,6 +31,7 @@ function InputBox(props: InputProps): JSX.Element {
     <input
       className="outline-none block border-2 w-full px-2 hover:border-blue-200 tracking-wide text-gray-700 text-xs rounded-md h-10 focus:border-blue-500"
       type="text"
+      {...props.register(props.id)}
       {...props}
     />
   );
